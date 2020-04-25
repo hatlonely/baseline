@@ -1,6 +1,8 @@
-#include <gtest/gtest.h>
-#include <iostream>
 #include "big_int.hpp"
+
+#include <gtest/gtest.h>
+
+#include <iostream>
 
 int main(int argc, char* argv[]) {
     testing::InitGoogleTest(&argc, argv);
@@ -8,10 +10,10 @@ int main(int argc, char* argv[]) {
 }
 
 TEST(testBigInt, caseToString) {
-    EXPECT_EQ(1234567890_bi .ToString(), "1234567890");
-    EXPECT_EQ(01234_bi .ToString(), "1234");
-    EXPECT_EQ(123456_bi .ToString(), "123456");
-    EXPECT_EQ(123_bi .ToString(), "123");
+    EXPECT_EQ((1234567890_bi).ToString(), "1234567890");
+    EXPECT_EQ((01234_bi).ToString(), "1234");
+    EXPECT_EQ((123456_bi).ToString(), "123456");
+    EXPECT_EQ((123_bi).ToString(), "123");
     EXPECT_EQ(BigInt(12345).ToString(), "12345");
     EXPECT_EQ(BigInt(0).ToString(), "0");
     EXPECT_EQ(BigInt("-1234").ToString(), "-1234");
@@ -32,8 +34,8 @@ TEST(testBigInt, caseAdd) {
         EXPECT_EQ(bi, 37173414028087337424798372270333133_bi);
     }
 
-    EXPECT_EQ(1234_bi .AddShiftAbs(35, 1), 1234 + 35 * kFactor);
-    EXPECT_EQ(1234_bi .AddShiftAbs(35, 2), 1234 + 35 * kFactor * kFactor);
+    EXPECT_EQ((1234_bi).AddShiftAbs(35, 1), 1234 + 35 * kFactor);
+    EXPECT_EQ((1234_bi).AddShiftAbs(35, 2), 1234 + 35 * kFactor * kFactor);
     EXPECT_EQ(BigInt(1234 + 35 * kFactor * kFactor).SubShiftAbs(35, 2), 1234_bi);
 }
 
@@ -65,6 +67,9 @@ TEST(testBigInt, caseCompare) {
     EXPECT_FALSE(10_bi < 10_bi);
 
     EXPECT_TRUE(0_bi < 1_bi);
+
+    EXPECT_TRUE((1234_bi).CompareShiftAbs(123, 0) > 0);
+    EXPECT_TRUE((1234_bi).CompareShiftAbs(1234, 0) == 0);
 }
 
 TEST(testBigInt, caseIncrement) {
@@ -79,4 +84,10 @@ TEST(testBigInt, caseIncrement) {
 TEST(testBigInt, casePower) {
     EXPECT_EQ(2_bi ^ 10_bi, 1024_bi);
     EXPECT_EQ(10_bi ^ 40_bi, 10000000000000000000000000000000000000000_bi);
+}
+
+TEST(testBigInt, caseDel) {
+    EXPECT_EQ(320373058659216713908486537764172710546891667367504504445129181140_bi / 37164793690750742753172653515137753_bi, 8620337336594671625718755195380_bi);
+    EXPECT_EQ(456_bi / 12_bi, 38_bi);
+    EXPECT_EQ(4567_bi / 123_bi, 37_bi);
 }

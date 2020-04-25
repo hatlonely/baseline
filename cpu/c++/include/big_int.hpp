@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -166,6 +167,26 @@ class BigInt {
     }
 
     BigInt operator/(const BigInt& bi) {
+        auto res = DivAbs(bi);
+        res.sign = !(sign ^ bi.sign);
+        return res;
+    }
+
+    BigInt DivAbs(const BigInt& bi) {
+        BigInt d = *this;
+        BigInt res;
+
+        while (d.CompareShiftAbs(bi, 0) >= 0) {
+            int i = 0;
+            while (d.CompareShiftAbs(bi, i) >= 0) {
+                i++;
+            }
+            i--;
+            d.SubShiftAbs(bi, i);
+            res.AddShiftAbs(1, i);
+        }
+
+        return res;
     }
 
     BigInt MulAbs(const BigInt& bi) {
@@ -206,6 +227,16 @@ class BigInt {
                 m = kFactor + m;
             } else {
                 carry = 0;
+            }
+            vi[idx] = m;
+            idx++;
+        }
+
+        while (idx < vi.size() && carry != 0) {
+            int64_t m = vi[idx] - carry;
+            if (m < 0) {
+                carry = 1;
+                m = kFactor + m;
             }
             vi[idx] = m;
             idx++;
@@ -261,21 +292,29 @@ class BigInt {
         return *this;
     }
 
-    int CompareAbs(const BigInt& bi) const {
-        if (vi.size() < bi.vi.size()) {
+    int CompareShiftAbs(const BigInt& bi, int n) const {
+        if (vi.size() < bi.vi.size() + n) {
             return -1;
         }
-        if (vi.size() > bi.vi.size()) {
+        if (vi.size() > bi.vi.size() + n) {
             return 1;
         }
-
-        for (int i = vi.size() - 1; i >= 0; i--) {
-            if (vi[i] == bi.vi[i]) {
+        for (int i = bi.vi.size() - 1; i >= 0; i--) {
+            if (vi[i + n] == bi.vi[i]) {
                 continue;
             }
-            return vi[i] - bi.vi[i];
+            return vi[i + n] - bi.vi[i];
+        }
+        for (int i = 0; i < n; i++) {
+            if (vi[i] != 0) {
+                return 1;
+            }
         }
         return 0;
+    }
+
+    int CompareAbs(const BigInt& bi) const {
+        return CompareShiftAbs(bi, 0);
     }
 
     int Compare(const BigInt& bi) const {
