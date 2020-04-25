@@ -1,8 +1,8 @@
-#include <iostream>
-#include <vector>
-#include <sstream>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
+#include <sstream>
+#include <vector>
 
 const int kMaxExp = 3;
 const int64_t kFactor = pow(10, kMaxExp);
@@ -10,14 +10,14 @@ const int64_t kFactor = pow(10, kMaxExp);
 class BigInt {
     bool sign = true;
     std::vector<int64_t> vi;
-    
-  public:
+
+   public:
     BigInt() {}
 
     BigInt(int64_t i) {
         if (i < 0) {
             sign = false;
-            i = - i;
+            i = -i;
         }
         while (i != 0) {
             vi.push_back(i % kFactor);
@@ -47,35 +47,35 @@ class BigInt {
     BigInt(const BigInt& bi) {
         vi = bi.vi;
     }
-    
+
     BigInt& operator=(const BigInt& bi) {
         if (&bi == this) {
             return *this;
         }
-        
+
         vi = bi.vi;
         return *this;
     }
-    
+
     std::string ToString() const {
         std::stringstream ss;
         for (auto it = vi.crbegin(); it != vi.crend(); ++it) {
             ss << std::setw(3) << std::setfill('0') << (*it);
         }
         auto str = ss.str();
-        auto idx = std::find_if(str.begin(), str.end(), [](char ch) {return ch != '0';});
+        auto idx = std::find_if(str.begin(), str.end(), [](char ch) { return ch != '0'; });
         auto res = str.substr(idx - str.begin(), str.length());
         if (res.empty()) {
             return "0";
         }
-        
+
         if (!sign) {
             return "-" + res;
         }
         return res;
     }
 
-    operator std::string() const { 
+    operator std::string() const {
         return ToString();
     }
 
@@ -157,16 +157,15 @@ class BigInt {
 
     BigInt operator^(const BigInt& bi) {
         BigInt res(1);
-        
+
         for (BigInt i = 0; i < bi; ++i) {
             res = (*this) * res;
         }
-        
+
         return res;
     }
-    
+
     BigInt operator/(const BigInt& bi) {
-        
     }
 
     BigInt MulAbs(const BigInt& bi) {
@@ -195,7 +194,7 @@ class BigInt {
         BigInt b;
         b.vi = std::vector<int64_t>(bi.vi.size() + n, 0);
         for (int i = 0; i < bi.vi.size(); i++) {
-            b.vi[i+n] = bi.vi[i];
+            b.vi[i + n] = bi.vi[i];
         }
 
         int idx = 0;
@@ -297,7 +296,7 @@ class BigInt {
         return Compare(bi) == 0;
     }
 
-    bool operator< (const BigInt& bi) const {
+    bool operator<(const BigInt& bi) const {
         return Compare(bi) < 0;
     }
 
@@ -305,11 +304,11 @@ class BigInt {
         return Compare(bi) > 0;
     }
 
-    bool operator>= (const BigInt& bi) const {
+    bool operator>=(const BigInt& bi) const {
         return !(*this < bi);
     }
 
-    bool operator<= (const BigInt& bi) const {
+    bool operator<=(const BigInt& bi) const {
         return !(*this > bi);
     }
 };
@@ -318,7 +317,7 @@ BigInt operator"" _bi(const char* str) {
     return BigInt(std::string(str));
 }
 
-std::ostream& operator<< (std::ostream& out, const BigInt& b) {
+std::ostream& operator<<(std::ostream& out, const BigInt& b) {
     out << b.ToString();
     return out;
 }
