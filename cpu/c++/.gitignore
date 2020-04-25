@@ -1,0 +1,5 @@
+build/
+xcode/
+third/
+.DS_Store
+.*.swp
